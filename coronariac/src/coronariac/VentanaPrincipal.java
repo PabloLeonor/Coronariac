@@ -27,7 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 
 public class VentanaPrincipal extends JFrame {
-
+	
+	final String version ="Versión 0.3";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel contentPane_1;
@@ -41,10 +42,10 @@ public class VentanaPrincipal extends JFrame {
 		//objetos
 		ContadorDePrograma contador= new ContadorDePrograma();
 		EntradaSalida io = new EntradaSalida();
-		Control cu = new Control(flag);
+		Control cu = new Control(flag,memoria,contador);
 		
 		//botones
-		setTitle("Coronariac V0.1");
+		setTitle("Coronariac "+version);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 680, 450);
@@ -82,7 +83,7 @@ public class VentanaPrincipal extends JFrame {
 		JMenuItem mntmAcercaDe = new JMenuItem("Acerca de..");
 		mntmAcercaDe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(mntmAcercaDe, "Gracias por usar Coronariac :)\nversión 0.1\nCoronariac © 2024 by Pablo Leonor is licensed under CC BY-NC-SA 4.0.\nTo view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/");
+				JOptionPane.showMessageDialog(mntmAcercaDe, "Gracias por usar Coronariac :)\n"+version+"\nCoronariac © 2024 by Pablo Leonor is licensed under CC BY-NC-SA 4.0.\nTo view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/4.0/");
 			}
 		});
 		mnAyuda.add(mntmAcercaDe);
@@ -203,19 +204,35 @@ public class VentanaPrincipal extends JFrame {
 		
 		botonStep.addActionListener(e -> {
 		    try {
-		        // Primero se interpreta la instrucción
-		        System.out.println("Se va a leer la celda número " + contador.getPosicion());
+		    	System.out.println("\n---CICLO DE INSTRUCCIONES---");
+		    	
+		    	System.out.print("	-Llevar contenido de la memoria al MAR: ");
 		        cu.setMAR(contador.getPosicion());
+		        System.out.print("Hecho, posición: "+ cu.getMAR()+"\n");
+		        
+		    	System.out.print("	-Avanzar una posición el contador de programas: ");
+		    	System.out.print(" se evalua["+ contador.getPosicion()+"]");
+		    	contador.annadirStep(); // Incrementa el contador de programa +1
+		    	posicionContador.setText(Integer.toString(contador.getPosicion())); // Actualiza el label
+		    	System.out.print(" se establece["+ contador.getPosicion()+"]\n");
+		    	
+		    	System.out.print("	-Se extrae el dato de la memoria: [");
+		    	cu.setInstruccion(memoria.getRam(cu.getMAR()));
+		    	System.out.print(cu.getInstruccion()+"]\n");
+		    	System.out.print("	-Se comprueba el signo del acumulador(flag): [");
+		    	System.out.print(flag.getFlagSigno()+"]\n");
+		    	
+		    	System.out.print("	-Se decodifica la intrucción: \n");
+		    	cu.decodificar();
+		    	
+		    	System.out.print("	-Actualizando pantalla\n");
+		    	
+		    	acumuladorPrimerOperando.setText(Integer.toString(cu.getPrimerOperandoAcc()));
+		    	acumuladorSegundoOperando.setText(Integer.toString(cu.getSegundoOperandoAcc()));
+		    	acumuladorResultado.setText(Integer.toString(cu.getResultadoAcc()));
 
-		        // Convertir el valor de RAM (String) a int antes de pasarlo
-		        String instruccion = memoria.getRam(contador.getPosicion());
-		        cu.setInstruccion(instruccion);
-
-		        cu.decodificar();
-
-		        // Ahora se actualiza el contador de programa
-		        contador.annadirStep(); // Incrementa el contador de programa +1
-		        posicionContador.setText(Integer.toString(contador.getPosicion())); // Actualiza el label
+		       
+		        
 		    } catch (NumberFormatException ex) {
 		        System.err.println("Error al convertir la instrucción a un número: " + ex.getMessage());
 		    }

@@ -4,17 +4,28 @@ package control;
 
 public class Flags {
 	private int flagHLT;
+	private char flagSigno;
 	
 	public Flags() {
 		this.flagHLT=0;
+		this.flagSigno='+';
 	}
-
+	
+	
 	public int getFlagHLT() {
 		return flagHLT;
 	}
 
+	public char getFlagSigno() {
+		return flagSigno;
+	}
+
 	public void setFlagHLT(int flagHLT) {
 		this.flagHLT = flagHLT;
+	}
+	
+	public void setFlagSigno(char flagSigno) {
+		this.flagSigno = flagSigno;
 	}
 
 }

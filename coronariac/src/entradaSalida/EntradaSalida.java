@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import coronariac.partesOrdenador.Memoria;
 
@@ -26,12 +27,11 @@ public class EntradaSalida {
 		int seleccion = fileChooser.showSaveDialog(mntmGuardar);
 		
 		if(seleccion== JFileChooser.APPROVE_OPTION) {//con esto manejamos el guardado de archivos
-			System.out.println("se ha guardado correctamente manim");
 			File fichero = fileChooser.getSelectedFile();
 			 try (BufferedWriter writer = new BufferedWriter(new FileWriter(fichero))) {
 				 	String memoDump=Arrays.toString(memoria.getRamToda());
 		            writer.write(memoDump); // Escribimos el texto en el archivo
-		            System.out.println("Se ha guardado correctamente, manim");
+		            System.out.println("Se ha guardado correctamente");
 		        } catch (IOException e) {
 		            System.err.println("Error al guardar el archivo: " + e.getMessage());
 		        }
@@ -41,6 +41,9 @@ public class EntradaSalida {
 	
 	public void cargarArchivo(JMenuItem mntmGuardar,Memoria memoria) {
 		System.out.println("Se va a abrir el archivo y se va a guardar en la memoria");	
+		JMenuItem advertencia = new JMenuItem("Advertencia");
+		JOptionPane.showMessageDialog(advertencia, "Función no disponible por el momento");
+		
 		
 	}
 	
