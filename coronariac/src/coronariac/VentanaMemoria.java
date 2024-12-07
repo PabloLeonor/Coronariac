@@ -17,6 +17,7 @@ import java.awt.Toolkit;
 
 public class VentanaMemoria extends JFrame {
 
+	final String version ="Versión 0.3";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private List<JLabel> labelsPos; // lista para almacenar las etiquetas de posiciones
@@ -28,7 +29,7 @@ public class VentanaMemoria extends JFrame {
 	public VentanaMemoria(Memoria memoria, Flags flag) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaMemoria.class.getResource("/img/iconoPequennoMemo.png")));
 		setResizable(false);
-		setTitle("Celdas de Memoria Coronariac V 0.1");
+		setTitle("Celdas de Memoria Coronariac "+version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 680, 450);
 		contentPane = new JPanel();
