@@ -28,7 +28,7 @@ import java.awt.Toolkit;
 
 public class VentanaPrincipal extends JFrame {
 	
-	final String version ="Versión 0.3";
+	final String version ="Versión 0.3.5";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel contentPane_1;
@@ -37,6 +37,8 @@ public class VentanaPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public VentanaPrincipal(Memoria memoria, Flags flag) {
+		VentanaMemoria frameMemo = new VentanaMemoria(memoria,flag);
+		frameMemo.setVisible(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaPrincipal.class.getResource("/img/iconoPequenno.png")));
 		
 		//objetos
@@ -230,6 +232,7 @@ public class VentanaPrincipal extends JFrame {
 		    	acumuladorPrimerOperando.setText(Integer.toString(cu.getPrimerOperandoAcc()));
 		    	acumuladorSegundoOperando.setText(Integer.toString(cu.getSegundoOperandoAcc()));
 		    	acumuladorResultado.setText(Integer.toString(cu.getResultadoAcc()));
+		    	frameMemo.actualizarVista(memoria);
 
 		       
 		        

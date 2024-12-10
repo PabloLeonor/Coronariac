@@ -127,6 +127,27 @@ public class Control {
 				
 			case 4:
 				System.out.println("		Instrucción cuatro: SFT y el dato es: "+dato);
+				int datoIzq;
+				int datoDcha;
+				//si el dato es menor que 10, (entre 0 y 9) se tomará en consideración sólo el desplazamiento a la derecha
+				if(dato<9 && dato>=0) {
+					datoDcha=dato;
+					datoIzq=0;
+				}else {
+					
+					datoDcha=dato%10;
+					datoIzq = dato/10;
+				}
+				
+				System.out.println("partiendo dato por la mitad: "+dato+" "+datoIzq+" "+datoDcha);
+				//ahora se produce el desplazamiento a la izquierda en función del número de desplazamientos dado, primero a la izquierda y luego a la derecha:
+				String accString= Integer.toString(this.resultadoAcc);
+				for (int i = 1; i <= datoIzq; i++) {
+				    accString+='0';
+				}
+				System.out.println("Se ha desplazado "+datoIzq+" posiciones a la izquierda: "+this.resultadoAcc+" es: "+ accString);
+				
+				
 				break;
 				
 			case 5:
@@ -149,7 +170,23 @@ public class Control {
 				
 			case 7:
 				System.out.println("		Instrucción siete: SUB y el dato es: "+dato);
+				System.out.print("			Introduciendo el contenido de la posición de memoria "+dato+" en el acumulador");
+				System.out.print("\n			Sumando acumulador");
+				
+				this.segundoOperandoAcc= Integer.valueOf(memo.getRam(dato));
+				System.out.print("\n			Segundo operando acc" +this.segundoOperandoAcc);
+				this.resultadoAcc = this.primerOperandoAcc-this.segundoOperandoAcc;
+				System.out.print("\n			Resultado de la suma" +this.resultadoAcc);
+				System.out.print("\n			Asignando flag del signo del resultado");
+				
+				if(this.resultadoAcc>=0) {
+					this.flag.setFlagSigno('+');
+				}else{
+					this.flag.setFlagSigno('-');
+				}
+				System.out.print("Signo ["+ this.flag.getFlagSigno()+"]");
 				break;
+
 				
 			case 8:
 				System.out.println("		Instrucción ocho: JMP y el dato es: "+dato);

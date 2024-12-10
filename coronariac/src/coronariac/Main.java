@@ -14,10 +14,10 @@ public class Main {
 			public void run() {
 				try {
 					VentanaPrincipal frame = new VentanaPrincipal(memoria,flag);
-					VentanaMemoria frameMemo = new VentanaMemoria(memoria,flag);
+					//VentanaMemoria frameMemo = new VentanaMemoria(memoria,flag);
 					
 					frame.setVisible(true);
-					frameMemo.setVisible(true);
+					//frameMemo.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

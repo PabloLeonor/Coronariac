@@ -17,7 +17,7 @@ import java.awt.Toolkit;
 
 public class VentanaMemoria extends JFrame {
 
-	final String version ="Versión 0.3";
+	final String version ="Versión 0.3.5";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private List<JLabel> labelsPos; // lista para almacenar las etiquetas de posiciones
@@ -94,7 +94,7 @@ public class VentanaMemoria extends JFrame {
 		            String valor = celda.getText().trim(); // Eliminamos espacios en blanco
 
 		            // Validamos que el valor tiene exactamente 3 dígitos
-		            if (!valor.matches("\\d{3}")) {
+		            if (!valor.matches("-?\\d{3}")) {
 		                throw new IllegalArgumentException(
 		                    "El valor en la celda debe ser un número de exactamente 3 dígitos. Valor inválido: " + valor);
 		            }
@@ -114,4 +114,12 @@ public class VentanaMemoria extends JFrame {
 
 		
 	}
+	
+	public void actualizarVista(Memoria memoria) {
+	    for (int i = 0; i < labelsCeldas.size(); i++) {
+	        String valor = memoria.getRam(i);
+	        labelsCeldas.get(i).setText(valor);  // Actualiza las celdas de la interfaz
+	    }
+	}
+
 }

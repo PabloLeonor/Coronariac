@@ -42,7 +42,7 @@ public class Memoria {
      */
     public void setRam(int posicion, String valor) {
         if (posicion >= 0 && posicion < tamannoMemoria) {
-            if (valor != null && valor.matches("\\d{3}")) { // Valida que el valor sea un String con 3 dígitos
+            if (valor != null && valor.matches("-?\\d{3}")) { // Valida que el valor sea un String con 3 dígitos ne
                 ram[posicion] = valor;
             } else {
                 throw new IllegalArgumentException("El valor debe ser un String de exactamente 3 dígitos.");
