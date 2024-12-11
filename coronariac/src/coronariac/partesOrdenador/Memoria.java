@@ -9,6 +9,7 @@ public class Memoria {
         for (int i = 0; i < tamannoMemoria; i++) {
             ram[i] = "000";
         }
+        ram[99]="800";
     }
 
     /**

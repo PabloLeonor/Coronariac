@@ -17,7 +17,7 @@ import java.awt.Toolkit;
 
 public class VentanaMemoria extends JFrame {
 
-	final String version ="Versión 0.3.5";
+	final String version ="Versión 0.6";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private List<JLabel> labelsPos; // lista para almacenar las etiquetas de posiciones

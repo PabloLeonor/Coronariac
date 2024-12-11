@@ -1,4 +1,4 @@
-# Coronariac (under development, Version 0.3.5 )
+# Coronariac (under development, Version 0.6 )
 Coronariac is an emulator of CARDIAC but, what is CARDIAC?
 Cardiac is a paper computer.Yes! its an actual computer made of paper! , but, how does a paper computer works? well its actually powered by you, but this doesnt make it less interesting...
 It was designed by bell labs to teach how computers work back in the 60's, this project is an emulator of this computer developed in java.
@@ -9,27 +9,24 @@ At the moment, the emulator is capable of:
   
   Save the memory into a file to your pc
 
-  Usage of the opcodes 1,2,3,6 and 7... is capable of the usage of negative numbers, since opcode 3 works with checking negative numbers, yes, coronariac is now able to do conditional jumps
+  Usage of all opcodes, but can not show the i/o contents, it has to be shown in the java console, planning for next version completting all i/0 functions.
+  Right now, the input is emulated and contains the numers 3 and 8
 
-  Here is a simple program:
+  Here is a simple adding program from official Cardiac's mannual:
   
-  01 112
+  0 034 [load the first number from imput and store it in the memory adress 34]
   
-  02 213
+  1 035 [load the second number from imput and store it in the memory adress 35]
   
-  03 614
+  1 134 [clear the accumulator and load the content of the adress 34 as the first numer to add]
   
-  .
+  3 235 [add the contents of the adress 35 as the second number and add it]
   
-  .
+  4 636 [the result of the adding will be stored in the memory adress 36]
   
-  .
+  5 536 [the contents of the memory adress 36 will now be shown in the output]
+  
+  6 900 [stops the machine]
 
-  12 99
+  Write this in coronariac's memory sheet and press [program] button, then step the machine using the [step] for execute every cycle of the adding program
 
-  13 100
-
-  This program will load the number stored in position 12 and 13 and add it, then will be stored in position 14.
-  Since there is no memory sheet refresh, the best way to check this is saving the memory and open it with notepad. The position 14 will be 199
-
-Next version adding negative numbers suport, refresh the memory sheet, adding more instructions

@@ -2,6 +2,7 @@ package control;
 
 import coronariac.partesOrdenador.ContadorDePrograma;
 import coronariac.partesOrdenador.Memoria;
+import entradaSalida.EntradaSalida;
 
 public class Control {
 	
@@ -13,8 +14,9 @@ public class Control {
 	private Flags flag; 
 	private Memoria memo;
 	private ContadorDePrograma contador;
+	private EntradaSalida io;
 	
-	public Control(Flags flag, Memoria memo,ContadorDePrograma contador) {
+	public Control(Flags flag, Memoria memo,ContadorDePrograma contador,EntradaSalida io) {
 		this.primerOperandoAcc=0;
 		this.segundoOperandoAcc=0;
 		this.resultadoAcc=0;
@@ -23,6 +25,7 @@ public class Control {
 		this.flag = flag;
 		this.memo = memo;
 		this.contador = contador;
+		this.io = io;
 	}
 	
 	public int getPrimerOperandoAcc() {
@@ -76,7 +79,15 @@ public class Control {
 		System.out.println("		["+dato+"]["+instruccion+"]");
 		switch(instruccion) {
 			case 0:
+				io.setEntrada("003");
+				io.setEntrada("008");
 				System.out.println("		Instrucción cero: INP y el dato es: "+dato);
+				System.out.print("\n			Contenido de la entrada: "+io.getEntrada());
+				System.out.print("\n			Leyendo contenido de la entrada "+io.getPrimerValor());
+				System.out.print("\n			Guardando en: "+dato);
+				memo.setRam(dato, io.getPrimerValor());
+				io.eliminarPrimerValor();
+				System.out.print("\n			Contenido de la entrada: "+io.getEntrada());
 				break;
 				
 			case 1:
@@ -145,25 +156,73 @@ public class Control {
 				for (int i = 1; i <= datoIzq; i++) {
 				    accString+='0';
 				}
-				System.out.println("Se ha desplazado "+datoIzq+" posiciones a la izquierda: "+this.resultadoAcc+" es: "+ accString);
+			
+				if (accString.length() > 4) {
+				    accString = accString.substring(accString.length() - 4);
+				}
+
+				System.out.println("Se ha desplazado " + datoIzq + " posiciones a la izquierda: " + this.resultadoAcc + " es: " + accString);
+				
+				//ahora a la derecha
+				for (int i = 1; i <= datoDcha; i++) {
+				    accString='0'+accString;
+				}
+				
+				// Asegúrate de que accString tiene al menos 4 caracteres
+				if (accString.length() < 4) {
+				    // Completar con ceros a la izquierda
+				    while (accString.length() < 4) {
+				        accString = '0' + accString;
+				    }
+				} else {
+				    // Tomar los 4 caracteres más a la izquierda
+				    accString = accString.substring(0, 4);
+				}
+				
+				this.resultadoAcc=Integer.valueOf(accString);
+
+				System.out.println("Se ha desplazado " + datoDcha + " posiciones a la derecha: " + this.resultadoAcc + " es: " + accString);
 				
 				
 				break;
 				
 			case 5:
 				System.out.println("		Instrucción cinco: OUT y el dato es: "+dato);
+				System.out.print("		Leyendo datos de la celda "+dato);
+				String contenido = memo.getRam(dato);
+				System.out.print("		Llevando "+contenido+" a la salida");
+				io.setSalida(contenido);
+				
 				break;
 				
 			case 6:
-				System.out.println("		Instrucción seis: STO y el dato es: "+dato);
-				System.out.print("			Extrayendo el resultado del acumulador y escribiéndolo en la posición "+dato);
-				if(this.resultadoAcc<10) {
-					memo.setRam(dato, "00"+Integer.toString(this.resultadoAcc));
-				}else if(this.resultadoAcc<100) {
-					memo.setRam(dato, "0"+Integer.toString(this.resultadoAcc));
-				}if(this.resultadoAcc>=100) {
-					memo.setRam(dato, Integer.toString(this.resultadoAcc));
-				}
+			    System.out.println("    Instrucción seis: STO y el dato es: " + dato);
+			    System.out.print("        Extrayendo el resultado del acumulador y escribiéndolo en la posición " + dato);
+
+			    // Si el resultado es negativo, manejamos el formato para los números negativos
+			    if (this.resultadoAcc < 0) {
+			        // Formatear el número negativo manteniendo el signo
+			        int valorAbs = Math.abs(this.resultadoAcc);
+			        if (valorAbs < 10) {
+			            memo.setRam(dato, "-00" + valorAbs);
+			        } else if (valorAbs < 100) {
+			            memo.setRam(dato, "-0" + valorAbs);
+			        } else {
+			            memo.setRam(dato, String.format("-%03d", valorAbs));
+			        }
+			    } else {
+			        // Para números positivos, formateamos normalmente
+			        if (this.resultadoAcc < 10) {
+			            memo.setRam(dato, "00" + this.resultadoAcc);
+			        } else if (this.resultadoAcc < 100) {
+			            memo.setRam(dato, "0" + this.resultadoAcc);
+			        } else if (this.resultadoAcc > 999) {
+			            int digitosASubir = this.resultadoAcc % 1000;
+			            memo.setRam(dato, String.format("%03d", digitosASubir));
+			        } else {
+			            memo.setRam(dato, Integer.toString(this.resultadoAcc));
+			        }
+			    }
 				//memo.setRam(dato, Integer.toString(this.resultadoAcc));
 				
 				break;
@@ -190,10 +249,25 @@ public class Control {
 				
 			case 8:
 				System.out.println("		Instrucción ocho: JMP y el dato es: "+dato);
+				System.out.print("\n			Guardando ubicación actual("+contador.getPosicion()+") en la posición 99");
+				if (contador.getPosicion()<=9) {
+					memo.setRam(99, "80"+contador.getPosicion());
+				}else {
+					memo.setRam(99, "8"+contador.getPosicion());
+				}
+				
+				System.out.print("\n			El programa saltará a la posición "+dato);
+				contador.setPosicion(dato);
+				
 				break;
 				
 			case 9:
 				System.out.println("		Instrucción nueve: HRS y el dato es: "+dato);
+				
+				System.out.print("\n			Guardando salida");
+				System.out.print("\n			Estableciendo HLT");
+				flag.setFlagHLT(1);
+				contador.setPosicion(0);
 				
 				break;
 		}
