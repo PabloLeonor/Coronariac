@@ -25,10 +25,11 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
+import javax.swing.SwingConstants;
 
 public class VentanaPrincipal extends JFrame {
 	
-	final String version ="Versión 0.3.5";
+	final String version ="Versión 0.6";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel contentPane_1;
@@ -44,7 +45,7 @@ public class VentanaPrincipal extends JFrame {
 		//objetos
 		ContadorDePrograma contador= new ContadorDePrograma();
 		EntradaSalida io = new EntradaSalida();
-		Control cu = new Control(flag,memoria,contador);
+		Control cu = new Control(flag,memoria,contador,io);
 		
 		//botones
 		setTitle("Coronariac "+version);
@@ -58,17 +59,20 @@ public class VentanaPrincipal extends JFrame {
 		JMenu mnNewMenu = new JMenu("Archivo");
 		menuBar.add(mnNewMenu);
 		
-		JMenuItem mntmAbrir = new JMenuItem("Abrir...");
+		JMenuItem mntmAbrir = new JMenuItem("Importar memoria");
 		mntmAbrir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				io.cargarArchivo(mntmAbrir,memoria);
 				System.out.println("Se va a cargar el archivo");
 			}
 		});
+		
+		JMenuItem mntmEntrada = new JMenuItem("Abrir...");
+		mnNewMenu.add(mntmEntrada);
 		mnNewMenu.add(mntmAbrir);
 		contentPane = new JPanel();
 		
-		JMenuItem mntmGuardar = new JMenuItem("Guardar");
+		JMenuItem mntmGuardar = new JMenuItem("Exportar memoria");
 		mnNewMenu.add(mntmGuardar);
 		
 		mntmGuardar.addActionListener(e -> {
@@ -137,14 +141,17 @@ public class VentanaPrincipal extends JFrame {
 		contentPane_1.add(lblNewLabel_5);
 		
 		JLabel acumuladorPrimerOperando = new JLabel("000");
+		acumuladorPrimerOperando.setHorizontalAlignment(SwingConstants.RIGHT);
 		acumuladorPrimerOperando.setBounds(246, 304, 49, 14);
 		contentPane_1.add(acumuladorPrimerOperando);
 		
 		JLabel acumuladorSegundoOperando = new JLabel("000");
+		acumuladorSegundoOperando.setHorizontalAlignment(SwingConstants.RIGHT);
 		acumuladorSegundoOperando.setBounds(246, 323, 49, 14);
 		contentPane_1.add(acumuladorSegundoOperando);
 		
 		JLabel acumuladorResultado = new JLabel("000");
+		acumuladorResultado.setHorizontalAlignment(SwingConstants.RIGHT);
 		acumuladorResultado.setBounds(246, 345, 49, 14);
 		contentPane_1.add(acumuladorResultado);
 		
@@ -200,6 +207,11 @@ public class VentanaPrincipal extends JFrame {
 		posicionContador.setBounds(110, 252, 49, 14);
 		contentPane_1.add(posicionContador);
 		
+		JLabel labelFlagSigno = new JLabel("+");
+		labelFlagSigno.setHorizontalAlignment(SwingConstants.CENTER);
+		labelFlagSigno.setBounds(174, 345, 49, 14);
+		contentPane_1.add(labelFlagSigno);
+		
 		JButton botonStep = new JButton("STEP");
 		botonStep.setBounds(33, 218, 90, 23);
 		contentPane_1.add(botonStep);
@@ -212,6 +224,7 @@ public class VentanaPrincipal extends JFrame {
 		        cu.setMAR(contador.getPosicion());
 		        System.out.print("Hecho, posición: "+ cu.getMAR()+"\n");
 		        
+		        lblNewLabel_4.setText(memoria.getRam(contador.getPosicion()));
 		    	System.out.print("	-Avanzar una posición el contador de programas: ");
 		    	System.out.print(" se evalua["+ contador.getPosicion()+"]");
 		    	contador.annadirStep(); // Incrementa el contador de programa +1
@@ -229,10 +242,19 @@ public class VentanaPrincipal extends JFrame {
 		    	
 		    	System.out.print("	-Actualizando pantalla\n");
 		    	
+		    	System.out.print("  -Contenido de la salida: "+io.getSalida());
+		    	
 		    	acumuladorPrimerOperando.setText(Integer.toString(cu.getPrimerOperandoAcc()));
 		    	acumuladorSegundoOperando.setText(Integer.toString(cu.getSegundoOperandoAcc()));
 		    	acumuladorResultado.setText(Integer.toString(cu.getResultadoAcc()));
+		    	labelFlagSigno.setText(Character.toString(flag.getFlagSigno()));
 		    	frameMemo.actualizarVista(memoria);
+		    	if(flag.getFlagHLT()==0) {
+		    		lblNewLabel_1.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/parada.png")));
+		    	}else {
+		    		lblNewLabel_1.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/paradaActiva.png")));
+		    		botonStep.setEnabled(false);
+		    	}
 
 		       
 		        
@@ -257,10 +279,15 @@ public class VentanaPrincipal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				contador.setPosicion(0);// se establece el contador de programa a cero
 				posicionContador.setText(Integer.toString(contador.getPosicion()));//se actualiza el label
+				botonStep.setEnabled(true);
+				flag.setFlagHLT(0);
+				lblNewLabel_1.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/parada.png")));
 			}
 		});
 		botonReset.setBounds(33, 197, 90, 23);
 		contentPane_1.add(botonReset);
+		
+
 		
 	}
 }

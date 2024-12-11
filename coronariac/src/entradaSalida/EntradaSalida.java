@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
@@ -13,7 +14,55 @@ import javax.swing.JOptionPane;
 import coronariac.partesOrdenador.Memoria;
 
 public class EntradaSalida {
-	//funciones relacionadas con la entrada y salida y 
+	private ArrayList<String> entrada;//se almacenan los datos de entrada
+    private ArrayList<String> salida;//se almacenan los datos de salida
+
+    // Constructor
+    public EntradaSalida() {
+        entrada = new ArrayList<>();  // Inicializa el ArrayList de entrada
+        salida = new ArrayList<>();   // Inicializa el ArrayList de salida
+    }
+	
+	//funciones relacionadas con la entrada y salida 
+    
+    
+    public void setEntrada(String dato) {
+        entrada.add(dato);
+    }
+
+    public void setSalida(String dato) {
+        salida.add(dato); 
+    }
+
+    public ArrayList<String> getEntrada() {
+        return entrada;    
+    }
+
+    public ArrayList<String> getSalida() {
+        return salida;      
+    }
+	
+    /**
+     * 
+     * Recupera el primer valor del array list
+     * 
+     * **/
+    public String getPrimerValor() {
+        return entrada.isEmpty() ? null : entrada.get(0); //esto evita que pete si el array está vacío!
+    }
+    
+    
+    /**
+     * 
+     * Elimina el primer valor del array list
+     * 
+     * **/
+    public void eliminarPrimerValor() { //esto elimina el primer valor de la entrada, así no hace falta ir contando nada, hacemos del array una pila1
+        if (!entrada.isEmpty()) {
+            entrada.remove(0);
+        }
+    }
+
 	
 	/**
 	 * 
@@ -46,6 +95,7 @@ public class EntradaSalida {
 		
 		
 	}
+
 	
 
 }
