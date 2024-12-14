@@ -1,5 +1,7 @@
 package control;
 
+import javax.swing.JOptionPane;
+
 import coronariac.partesOrdenador.ContadorDePrograma;
 import coronariac.partesOrdenador.Memoria;
 import entradaSalida.EntradaSalida;
@@ -15,6 +17,7 @@ public class Control {
 	private Memoria memo;
 	private ContadorDePrograma contador;
 	private EntradaSalida io;
+	private String textoEntradaDescodificada;
 	
 	public Control(Flags flag, Memoria memo,ContadorDePrograma contador,EntradaSalida io) {
 		this.primerOperandoAcc=0;
@@ -26,8 +29,17 @@ public class Control {
 		this.memo = memo;
 		this.contador = contador;
 		this.io = io;
+		this.textoEntradaDescodificada="";
 	}
 	
+	public String getTextoEntradaDescodificada() {
+		return textoEntradaDescodificada;
+	}
+
+	public void setTextoEntradaDescodificada(String textoEntradaDescodificada) {
+		this.textoEntradaDescodificada = textoEntradaDescodificada;
+	}
+
 	public int getPrimerOperandoAcc() {
 		return primerOperandoAcc;
 	}
@@ -79,15 +91,22 @@ public class Control {
 		System.out.println("		["+dato+"]["+instruccion+"]");
 		switch(instruccion) {
 			case 0:
-				io.setEntrada("003");
-				io.setEntrada("008");
 				System.out.println("		Instrucción cero: INP y el dato es: "+dato);
-				System.out.print("\n			Contenido de la entrada: "+io.getEntrada());
-				System.out.print("\n			Leyendo contenido de la entrada "+io.getPrimerValor());
-				System.out.print("\n			Guardando en: "+dato);
-				memo.setRam(dato, io.getPrimerValor());
-				io.eliminarPrimerValor();
-				System.out.print("\n			Contenido de la entrada: "+io.getEntrada());
+				if(io.getEntrada().isEmpty()) {
+					JOptionPane.showInternalMessageDialog(null, "No hay una entrada establecida.\nPor favor, cargue una nueva tarjeta de entrada.");
+					System.out.print("\n			No hay entrada");
+				}else {
+					System.out.print("\n			Contenido de la entrada: "+io.getEntrada());
+					System.out.print("\n			Leyendo contenido de la entrada "+io.getPrimerValor());
+					System.out.print("\n			Guardando en: "+dato);
+					memo.setRam(dato, io.getPrimerValor());
+					io.eliminarPrimerValor();
+					System.out.print("\n			Contenido de la entrada: "+io.getEntrada());
+					this.setTextoEntradaDescodificada("<html>"
+				            + "Copiar el contenido de la entrada a "
+				            + "la celda ["+dato+"] y avanzar una posición"
+				            + "</html>");
+				}
 				break;
 				
 			case 1:
@@ -101,6 +120,10 @@ public class Control {
 				
 				this.primerOperandoAcc= Integer.valueOf(memo.getRam(dato));
 				System.out.println("\n			Primer operando acc: "+this.primerOperandoAcc);
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Llevar al acumulador el contenido de "
+			            + "la celda ["+dato+"]"
+			            + "</html>");
 				
 				break;
 				
@@ -121,6 +144,10 @@ public class Control {
 					this.flag.setFlagSigno('-');
 				}
 				System.out.print("Signo ["+ this.flag.getFlagSigno()+"]");
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Llevar al acumulador el contenido de "
+			            + "la celda ["+dato+"]"
+			            + "</html>");
 				break;
 				
 			case 3:
@@ -133,6 +160,9 @@ public class Control {
 					System.out.print("\n			El programa saltará a la posición "+dato);
 					contador.setPosicion(dato);
 				}
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Ir a la celda ["+dato+"]"
+			            + "</html>");
 				
 				break;
 				
@@ -180,6 +210,10 @@ public class Control {
 				}
 				
 				this.resultadoAcc=Integer.valueOf(accString);
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Desplazar el contenido del acumulador ["+datoIzq+"] posiciones  "
+			            + "a la izquierda y después desplazar ["+datoDcha+"] posiciones a la derecha"
+			            + "</html>");
 
 				System.out.println("Se ha desplazado " + datoDcha + " posiciones a la derecha: " + this.resultadoAcc + " es: " + accString);
 				
@@ -192,6 +226,11 @@ public class Control {
 				String contenido = memo.getRam(dato);
 				System.out.print("		Llevando "+contenido+" a la salida");
 				io.setSalida(contenido);
+				
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Copiar el contenido de la celda ["+dato+"] en la"
+			            + "tarjeta de salida y mostrarla"
+			            + "</html>");
 				
 				break;
 				
@@ -223,6 +262,9 @@ public class Control {
 			            memo.setRam(dato, Integer.toString(this.resultadoAcc));
 			        }
 			    }
+			    this.setTextoEntradaDescodificada("<html>"
+			            + "Guardar en la celda ["+dato+"] el contenido del acumulador"
+			            + "</html>");
 				//memo.setRam(dato, Integer.toString(this.resultadoAcc));
 				
 				break;
@@ -243,19 +285,27 @@ public class Control {
 				}else{
 					this.flag.setFlagSigno('-');
 				}
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Restar los contenidos de la celda ["+dato+"] "
+			            + "al del acumulador"
+			            + "</html>");
 				System.out.print("Signo ["+ this.flag.getFlagSigno()+"]");
 				break;
 
 				
 			case 8:
 				System.out.println("		Instrucción ocho: JMP y el dato es: "+dato);
+				
 				System.out.print("\n			Guardando ubicación actual("+contador.getPosicion()+") en la posición 99");
 				if (contador.getPosicion()<=9) {
 					memo.setRam(99, "80"+contador.getPosicion());
 				}else {
 					memo.setRam(99, "8"+contador.getPosicion());
 				}
-				
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Mover Contador a la celda ["+dato+"] y guardar "
+			            + "la ubicación original en la celda [99]"
+			            + "</html>");
 				System.out.print("\n			El programa saltará a la posición "+dato);
 				contador.setPosicion(dato);
 				
@@ -263,11 +313,16 @@ public class Control {
 				
 			case 9:
 				System.out.println("		Instrucción nueve: HRS y el dato es: "+dato);
-				
+				this.setTextoEntradaDescodificada(" ");
 				System.out.print("\n			Guardando salida");
 				System.out.print("\n			Estableciendo HLT");
 				flag.setFlagHLT(1);
 				contador.setPosicion(0);
+				this.setTextoEntradaDescodificada("<html>"
+			            + "Avanzando posicion de salida "
+			            + "llevar contador a la celda [0]"
+			            + " deteniendo máquina, pulse reset para empezar de nuevo"
+			            + "</html>");
 				
 				break;
 		}
