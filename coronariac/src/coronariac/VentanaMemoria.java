@@ -11,17 +11,23 @@ import javax.swing.border.EmptyBorder;
 
 import control.Flags;
 import coronariac.partesOrdenador.Memoria;
+import entradaSalida.EntradaSalida;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Toolkit;
+import javax.swing.border.LineBorder;
+import java.awt.Rectangle;
 
 public class VentanaMemoria extends JFrame {
 
-	final String version ="Versión 0.6";
+	final String version ="Versión 0.8";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private List<JLabel> labelsPos; // lista para almacenar las etiquetas de posiciones
 	private List<JTextPane> labelsCeldas; //lista para almacenar las celdas
+	  private JTextPane textoSalida= new JTextPane();; // declaramos textoSalida como atributo de la clase
+
 
 	/**
 	 * Create the frame.
@@ -43,16 +49,21 @@ public class VentanaMemoria extends JFrame {
 		labelsCeldas = new ArrayList<>();
 		
 		JLabel lblNewLabel = new JLabel("Salida");
-		lblNewLabel.setBounds(10, 388, 44, 14);
+		lblNewLabel.setBounds(10, 343, 44, 14);
 		contentPane.add(lblNewLabel);
-		
-		JLabel labelSalida = new JLabel("0");
-		labelSalida.setBounds(64, 388, 29, 14);
-		contentPane.add(labelSalida);
 		
 		JButton botonProgramar = new JButton("Programar");
 		botonProgramar.setBounds(538, 368, 118, 23);
 		contentPane.add(botonProgramar);
+		
+		
+		this.textoSalida.setText((String) null);
+		this.textoSalida.setForeground(Color.BLACK);
+		this.textoSalida.setEditable(false);
+		this.textoSalida.setBounds(new Rectangle(1, 1, 1, 1));
+		this.textoSalida.setBorder(new LineBorder(new Color(0, 0, 0)));
+		this.textoSalida.setBounds(10, 371, 49, 20);
+		contentPane.add(this.textoSalida);
 				
 		int x = 83;
 		int y = 21;
@@ -70,7 +81,7 @@ public class VentanaMemoria extends JFrame {
 			labelPos.setBounds(x, y, 49, 14);
 			contentPane.add(labelPos);
 
-			labelsPos.add(labelPos); // Agregamos cada etiqueta a la lista
+			labelsPos.add(labelPos); // agregamos cada etiqueta a la lista
 			
 			y += 22;
 			if (i == 16 || i == 33 || i == 50 || i == 67 || i == 84) {
@@ -82,24 +93,21 @@ public class VentanaMemoria extends JFrame {
 		//======Acciones=======================
 		
 		botonProgramar.addActionListener(e -> {
-		    // Recorremos ambas listas en paralelo para obtener posición y valor
 		    for (int i = 0; i < labelsPos.size(); i++) {
 		        try {
-		            // Obtenemos la posición desde labelsPos
 		            JLabel label = labelsPos.get(i);
 		            int posicion = Integer.parseInt(label.getText());
 		            
 		            // Obtenemos el valor desde labelsCeldas
 		            JTextPane celda = labelsCeldas.get(i);
-		            String valor = celda.getText().trim(); // Eliminamos espacios en blanco
+		            String valor = celda.getText().trim(); // con esto quitamos los valores en blanco
 
-		            // Validamos que el valor tiene exactamente 3 dígitos
+		            //vemos si hay 3 digitos o es negativo
 		            if (!valor.matches("-?\\d{3}")) {
 		                throw new IllegalArgumentException(
 		                    "El valor en la celda debe ser un número de exactamente 3 dígitos. Valor inválido: " + valor);
 		            }
 
-		            // Asignamos el valor a la memoria
 		            System.out.println("Posición = " + posicion + " Valor = " + valor);
 		            memoria.setRam(posicion, valor);
 		        } catch (NumberFormatException ex) {
@@ -115,11 +123,20 @@ public class VentanaMemoria extends JFrame {
 		
 	}
 	
+	public void actualizarTarjetaSalida(EntradaSalida io) {
+		if(io.getSalida().isEmpty()) {
+			this.textoSalida.setText("");
+		}else {
+			this.textoSalida.setText(io.getSalida().getLast());
+		}
+		
+
+	}
+	
 	public void actualizarVista(Memoria memoria) {
 	    for (int i = 0; i < labelsCeldas.size(); i++) {
 	        String valor = memoria.getRam(i);
-	        labelsCeldas.get(i).setText(valor);  // Actualiza las celdas de la interfaz
+	        labelsCeldas.get(i).setText(valor);  // actualiza las celdas de la interfaz
 	    }
 	}
-
 }

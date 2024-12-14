@@ -26,28 +26,42 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.Rectangle;
+import javax.swing.border.LineBorder;
+import java.awt.Label;
+import java.awt.Component;
 
 public class VentanaPrincipal extends JFrame {
 	
-	final String version ="Versión 0.6";
+	final String version ="Versión 0.8";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel contentPane_1;
+	private String ubicacionSalida;
 
 	/**
 	 * Create the frame.
 	 */
 	public VentanaPrincipal(Memoria memoria, Flags flag) {
-		VentanaMemoria frameMemo = new VentanaMemoria(memoria,flag);
-		frameMemo.setVisible(true);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaPrincipal.class.getResource("/img/iconoPequenno.png")));
-		
 		//objetos
 		ContadorDePrograma contador= new ContadorDePrograma();
 		EntradaSalida io = new EntradaSalida();
 		Control cu = new Control(flag,memoria,contador,io);
 		
-		//botones
+		VentanaAyuda frameAyuda = new VentanaAyuda();
+		VentanaMemoria frameMemo = new VentanaMemoria(memoria,flag);
+		frameMemo.setVisible(true);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaPrincipal.class.getResource("/img/iconoPequenno.png")));
+		
+		this.ubicacionSalida=null;
+		
+		
+		
+		//======================================botones y funciones
+		
+		
+		
 		setTitle("Coronariac "+version);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,6 +83,15 @@ public class VentanaPrincipal extends JFrame {
 		
 		JMenuItem mntmEntrada = new JMenuItem("Abrir...");
 		mnNewMenu.add(mntmEntrada);
+		
+		JMenuItem mntmUbicacionEntrada = new JMenuItem("Establecer archivo de entrada");
+		mnNewMenu.add(mntmUbicacionEntrada);
+		mntmUbicacionEntrada.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				io.buscarTarjetaEntrada();
+				
+			}
+		});
 		mnNewMenu.add(mntmAbrir);
 		contentPane = new JPanel();
 		
@@ -81,7 +104,68 @@ public class VentanaPrincipal extends JFrame {
 		});
 		
 		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		mnNewMenu.add(mntmSalir);
+		
+		JMenu mnConfiguracion = new JMenu("Configuración");
+		menuBar.add(mnConfiguracion);
+		
+		JMenuItem mntmUbicacionSalida = new JMenuItem("Establecer ubicación de salida");
+		mntmUbicacionSalida.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ubicacionSalida=io.ubicacionSalida();
+				System.out.println("Se ha establecido una ubicación de salida: "+ubicacionSalida);
+				
+			}
+		});
+		mnConfiguracion.add(mntmUbicacionSalida);
+		
+		JMenu mnVer = new JMenu("Ver");
+		menuBar.add(mnVer);
+		
+		JMenuItem mntmContenidoEntrada = new JMenuItem("Ver contenido de la entrada");
+		mntmContenidoEntrada.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String contenidoEntrada="";
+				
+				if(io.getEntrada().isEmpty()) {
+					contenidoEntrada="\nLa entrada está vacía";
+				}else {
+					for (int i = io.getEntrada().size() - 1; i >= 0; i--) {
+						contenidoEntrada+="\n["+i+"] "+io.getEntrada().get(i);
+					}
+					
+				}
+				
+				JOptionPane.showMessageDialog(mntmContenidoEntrada, "La tarjeta de entrada contiene: "+contenidoEntrada);
+			}
+		});
+		mnVer.add(mntmContenidoEntrada);
+		
+		JMenuItem mntmContenidoSalida = new JMenuItem("Ver contenido de la salida");
+		mntmContenidoSalida.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String contenidoSalida="";
+				
+				if(io.getSalida().isEmpty()) {
+					contenidoSalida="\nLa salida está vacía";
+				}else {
+					for (int i = io.getSalida().size() - 1; i >= 0; i--) {
+						contenidoSalida+="\n["+i+"] "+io.getSalida().get(i);
+					}
+					
+				}
+				
+				JOptionPane.showMessageDialog(mntmContenidoEntrada, "La tarjeta de salida contiene: "+contenidoSalida);
+				
+				
+			}
+		});
+		mnVer.add(mntmContenidoSalida);
 		
 		JMenu mnAyuda = new JMenu("Ayuda");
 		menuBar.add(mnAyuda);
@@ -97,7 +181,8 @@ public class VentanaPrincipal extends JFrame {
 		JMenuItem mntmAyuda = new JMenuItem("Ayuda");
 		mntmAyuda.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(mntmAyuda, "Soy una ayuda");
+				//JOptionPane.showMessageDialog(mntmAyuda, "Soy una ayuda");
+				frameAyuda.setVisible(true);
 
 			}
 		});
@@ -120,13 +205,14 @@ public class VentanaPrincipal extends JFrame {
 		lblNewLabel_1.setBounds(538, 202, 64, 64);
 		contentPane_1.add(lblNewLabel_1);
 		
-		JLabel lblInstruccin = new JLabel("Instrucción");
-		lblInstruccin.setBounds(434, 141, 109, 36);
+		JLabel lblInstruccin = new JLabel("Decodificador de Intrucciones");
+		lblInstruccin.setBounds(434, 89, 208, 36);
 		contentPane_1.add(lblInstruccin);
 		
-		JLabel lblNewLabel_2 = new JLabel("Copiar contenidos de la entrada a la celda 00");
-		lblNewLabel_2.setBounds(341, 177, 343, 14);
-		contentPane_1.add(lblNewLabel_2);
+		JLabel labelInstruccionDecodificada = new JLabel("");
+		labelInstruccionDecodificada.setBackground(new Color(255, 255, 255));
+		labelInstruccionDecodificada.setBounds(341, 136, 315, 55);
+		contentPane_1.add(labelInstruccionDecodificada);
 		
 		JLabel lblNewLabel_3 = new JLabel("Registro de\r instrucciones");
 		lblNewLabel_3.setBounds(434, 310, 208, 14);
@@ -160,6 +246,10 @@ public class VentanaPrincipal extends JFrame {
 		contentPane_1.add(lblNewLabel_6);
 		
 		JTextPane textoEntrada = new JTextPane();
+		textoEntrada.setEditable(false);
+		textoEntrada.setBorder(new LineBorder(new Color(0, 0, 0)));
+		textoEntrada.setBounds(new Rectangle(1, 1, 1, 1));
+		textoEntrada.setForeground(new Color(0, 0, 0));
 		textoEntrada.setBounds(33, 329, 49, 20);
 		contentPane_1.add(textoEntrada);
 		
@@ -204,13 +294,18 @@ public class VentanaPrincipal extends JFrame {
 		contentPane_1.add(lblNewLabel_16);
 		
 		JLabel posicionContador = new JLabel(Integer.toString(contador.getPosicion()));
-		posicionContador.setBounds(110, 252, 49, 14);
+		posicionContador.setBounds(174, 252, 49, 14);
 		contentPane_1.add(posicionContador);
 		
 		JLabel labelFlagSigno = new JLabel("+");
 		labelFlagSigno.setHorizontalAlignment(SwingConstants.CENTER);
 		labelFlagSigno.setBounds(174, 345, 49, 14);
 		contentPane_1.add(labelFlagSigno);
+		
+		JLabel lblFlechaDireccional = new JLabel("");
+		lblFlechaDireccional.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/flechaArriba.png")));
+		lblFlechaDireccional.setBounds(430, 202, 64, 64);
+		contentPane_1.add(lblFlechaDireccional);
 		
 		JButton botonStep = new JButton("STEP");
 		botonStep.setBounds(33, 218, 90, 23);
@@ -243,7 +338,7 @@ public class VentanaPrincipal extends JFrame {
 		    	System.out.print("	-Actualizando pantalla\n");
 		    	
 		    	System.out.print("  -Contenido de la salida: "+io.getSalida());
-		    	
+		    	labelInstruccionDecodificada.setText(cu.getTextoEntradaDescodificada());
 		    	acumuladorPrimerOperando.setText(Integer.toString(cu.getPrimerOperandoAcc()));
 		    	acumuladorSegundoOperando.setText(Integer.toString(cu.getSegundoOperandoAcc()));
 		    	acumuladorResultado.setText(Integer.toString(cu.getResultadoAcc()));
@@ -255,6 +350,19 @@ public class VentanaPrincipal extends JFrame {
 		    		lblNewLabel_1.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/paradaActiva.png")));
 		    		botonStep.setEnabled(false);
 		    	}
+		    	String intruccionAhora= memoria.getRam(cu.getMAR());
+		    	if(intruccionAhora.startsWith("9")) {
+		    		lblFlechaDireccional.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/flechaAlLado.png")));
+		    	}else if(intruccionAhora.startsWith("3") && flag.getFlagSigno()=='+'){
+		    		System.out.println("me estoy ejecutando");
+		    		lblFlechaDireccional.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/flechaAbajo.png")));
+		    	}else{
+		    		lblFlechaDireccional.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/flechaArriba.png")));
+		    	}
+		    	
+		    	textoEntrada.setText(io.getPrimerValor());
+		    	frameMemo.actualizarTarjetaSalida(io);
+		    	
 
 		       
 		        
@@ -262,17 +370,6 @@ public class VentanaPrincipal extends JFrame {
 		        System.err.println("Error al convertir la instrucción a un número: " + ex.getMessage());
 		    }
 		});
-
-		
-		JButton btnAuto = new JButton("AUTO");
-		btnAuto.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(btnAuto, "Función no disponible por el momento","", JOptionPane.WARNING_MESSAGE);
-				
-			}
-		});
-		btnAuto.setBounds(133, 218, 90, 23);
-		contentPane_1.add(btnAuto);
 		
 		JButton botonReset = new JButton("RESET");
 		botonReset.addActionListener(new ActionListener() {
@@ -284,8 +381,20 @@ public class VentanaPrincipal extends JFrame {
 				lblNewLabel_1.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/parada.png")));
 			}
 		});
-		botonReset.setBounds(33, 197, 90, 23);
+		botonReset.setBounds(133, 218, 90, 23);
 		contentPane_1.add(botonReset);
+		
+		JLabel lblFlechaDireccional_1 = new JLabel("");
+		lblFlechaDireccional_1.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		lblFlechaDireccional_1.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/flechaLarga.png")));
+		lblFlechaDireccional_1.setBounds(630, 161, 26, 219);
+		contentPane_1.add(lblFlechaDireccional_1);
+		
+		JLabel lblInstruccin_1 = new JLabel("Contador de programa");
+		lblInstruccin_1.setBounds(33, 241, 208, 36);
+		contentPane_1.add(lblInstruccin_1);
+		
+		
 		
 
 		
