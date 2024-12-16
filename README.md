@@ -1,4 +1,4 @@
-# Coronariac (under development, Version 0.8 )
+# Coronariac (VERSION 1 SPANISH)
 Coronariac is an emulator of CARDIAC but, what is CARDIAC?
 Cardiac is a paper computer.Yes! its an actual computer made of paper! , but, how does a paper computer works? well its actually powered by you, but this doesnt make it less interesting...
 It was designed by bell labs to teach how computers work back in the 60's, this project is an emulator of this computer developed in java. ONLY FOR JAVA SE 22 AND UP!
@@ -25,6 +25,4 @@ The emulator is almost done!
 
   Write this in coronariac's memory sheet and press [program] button, then step the machine using the [step] for execute every cycle of the adding program
 
-  Next version: a proper inner documentation, the one that is currenly written is simple, import memory sheet properly, save output.tjd, .tjd editor
-
-  At the moment the program is full spanish, the final version will have an english version of the program  
+  At the moment the program is full spanish, now, its time to translate into english
