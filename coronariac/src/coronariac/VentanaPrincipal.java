@@ -34,7 +34,7 @@ import java.awt.Component;
 
 public class VentanaPrincipal extends JFrame {
 	
-	final String version ="Versión 0.8";
+	final String version ="Versión 1 Es";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel contentPane_1;
@@ -78,11 +78,9 @@ public class VentanaPrincipal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				io.cargarArchivo(mntmAbrir,memoria);
 				System.out.println("Se va a cargar el archivo");
+				frameMemo.actualizarVista(memoria);
 			}
 		});
-		
-		JMenuItem mntmEntrada = new JMenuItem("Abrir...");
-		mnNewMenu.add(mntmEntrada);
 		
 		JMenuItem mntmUbicacionEntrada = new JMenuItem("Establecer archivo de entrada");
 		mnNewMenu.add(mntmUbicacionEntrada);
@@ -90,6 +88,17 @@ public class VentanaPrincipal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				io.buscarTarjetaEntrada();
 				
+			}
+		});
+		
+		JMenuItem mntmUbicacionSalida = new JMenuItem("Establecer ubicación de salida");
+		mnNewMenu.add(mntmUbicacionSalida);
+		mntmUbicacionSalida.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ubicacionSalida=io.ubicacionSalida();
+				cu.setUbicacionSalida(ubicacionSalida);
+				System.out.println("Se ha establecido una ubicación de salida: "+ubicacionSalida);
+				JOptionPane.showMessageDialog(mntmUbicacionSalida, "Se ha establecido una ubicación de salida: \n"+ubicacionSalida);
 			}
 		});
 		mnNewMenu.add(mntmAbrir);
@@ -110,19 +119,6 @@ public class VentanaPrincipal extends JFrame {
 			}
 		});
 		mnNewMenu.add(mntmSalir);
-		
-		JMenu mnConfiguracion = new JMenu("Configuración");
-		menuBar.add(mnConfiguracion);
-		
-		JMenuItem mntmUbicacionSalida = new JMenuItem("Establecer ubicación de salida");
-		mntmUbicacionSalida.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ubicacionSalida=io.ubicacionSalida();
-				System.out.println("Se ha establecido una ubicación de salida: "+ubicacionSalida);
-				
-			}
-		});
-		mnConfiguracion.add(mntmUbicacionSalida);
 		
 		JMenu mnVer = new JMenu("Ver");
 		menuBar.add(mnVer);
@@ -159,8 +155,15 @@ public class VentanaPrincipal extends JFrame {
 					}
 					
 				}
+				String salidaTexto="";
+				if(cu.getUbicacionSalida()==null) {
+					salidaTexto="Sin ubicación de salida establecida";
+				}else {
+					salidaTexto= cu.getUbicacionSalida();
+				}
 				
-				JOptionPane.showMessageDialog(mntmContenidoEntrada, "La tarjeta de salida contiene: "+contenidoSalida);
+				
+				JOptionPane.showMessageDialog(mntmContenidoEntrada, "La tarjeta de salida contiene: \n"+salidaTexto+contenidoSalida);
 				
 				
 			}
@@ -317,6 +320,7 @@ public class VentanaPrincipal extends JFrame {
 		    	
 		    	System.out.print("	-Llevar contenido de la memoria al MAR: ");
 		        cu.setMAR(contador.getPosicion());
+		        frameMemo.escribirTextoUbicacionActual(contador.getPosicion());
 		        System.out.print("Hecho, posición: "+ cu.getMAR()+"\n");
 		        
 		        lblNewLabel_4.setText(memoria.getRam(contador.getPosicion()));
