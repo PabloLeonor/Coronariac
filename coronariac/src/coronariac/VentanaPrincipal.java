@@ -199,7 +199,7 @@ public class VentanaPrincipal extends JFrame {
 		contentPane_1.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/NuevoLogo.png")));
+		lblNewLabel.setIcon(new ImageIcon(VentanaPrincipal.class.getResource("/img/nuevoLogo.png")));
 		lblNewLabel.setBounds(157, 17, 593, 90);
 		contentPane_1.add(lblNewLabel);
 		
