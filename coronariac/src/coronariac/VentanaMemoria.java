@@ -14,20 +14,22 @@ import coronariac.partesOrdenador.Memoria;
 import entradaSalida.EntradaSalida;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.Toolkit;
 import javax.swing.border.LineBorder;
 import java.awt.Rectangle;
+import java.awt.Label;
 
 public class VentanaMemoria extends JFrame {
 
-	final String version ="Versión 0.8";
+	final String version ="Versión 1 Es";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private List<JLabel> labelsPos; // lista para almacenar las etiquetas de posiciones
 	private List<JTextPane> labelsCeldas; //lista para almacenar las celdas
-	  private JTextPane textoSalida= new JTextPane();; // declaramos textoSalida como atributo de la clase
-
+	private JTextPane textoSalida= new JTextPane(); // declaramos textoSalida como atributo de la clase
+	private Label labelUbicacion = new Label();
 
 	/**
 	 * Create the frame.
@@ -64,6 +66,11 @@ public class VentanaMemoria extends JFrame {
 		this.textoSalida.setBorder(new LineBorder(new Color(0, 0, 0)));
 		this.textoSalida.setBounds(10, 371, 49, 20);
 		contentPane.add(this.textoSalida);
+		
+		//Label labelUbicacion = new Label("Procesando ubicación: X");
+		labelUbicacion.setText("Procesando ubicación 0");
+		labelUbicacion.setBounds(10, 0, 210, 21);
+		contentPane.add(labelUbicacion);
 				
 		int x = 83;
 		int y = 21;
@@ -74,9 +81,7 @@ public class VentanaMemoria extends JFrame {
 			celda.setText(memoria.getRam(i));
 			celda.setBackground(new Color(153, 169, 255));
 			contentPane.add(celda);
-			
 			labelsCeldas.add(celda);
-			
 			JLabel labelPos = new JLabel(Integer.toString(i));
 			labelPos.setBounds(x, y, 49, 14);
 			contentPane.add(labelPos);
@@ -104,8 +109,11 @@ public class VentanaMemoria extends JFrame {
 
 		            //vemos si hay 3 digitos o es negativo
 		            if (!valor.matches("-?\\d{3}")) {
+		            	 JOptionPane.showMessageDialog(null, "El valor en la celda debe ser un número de exactamente 3 dígitos. Valor inválido: " + valor);
 		                throw new IllegalArgumentException(
+		                		
 		                    "El valor en la celda debe ser un número de exactamente 3 dígitos. Valor inválido: " + valor);
+		               
 		            }
 
 		            System.out.println("Posición = " + posicion + " Valor = " + valor);
@@ -121,6 +129,10 @@ public class VentanaMemoria extends JFrame {
 		});
 
 		
+	}
+	
+	public void escribirTextoUbicacionActual(int posicion) {
+		this.labelUbicacion.setText("Procesando ubicación "+posicion);
 	}
 	
 	public void actualizarTarjetaSalida(EntradaSalida io) {

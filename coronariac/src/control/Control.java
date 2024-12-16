@@ -1,5 +1,8 @@
 package control;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 import coronariac.partesOrdenador.ContadorDePrograma;
@@ -18,6 +21,7 @@ public class Control {
 	private ContadorDePrograma contador;
 	private EntradaSalida io;
 	private String textoEntradaDescodificada;
+	private String ubicacionSalida;
 	
 	public Control(Flags flag, Memoria memo,ContadorDePrograma contador,EntradaSalida io) {
 		this.primerOperandoAcc=0;
@@ -30,8 +34,17 @@ public class Control {
 		this.contador = contador;
 		this.io = io;
 		this.textoEntradaDescodificada="";
+		this.ubicacionSalida=null;
 	}
 	
+	public String getUbicacionSalida() {
+		return ubicacionSalida;
+	}
+
+	public void setUbicacionSalida(String ubicacionSalida) {
+		this.ubicacionSalida = ubicacionSalida;
+	}
+
 	public String getTextoEntradaDescodificada() {
 		return textoEntradaDescodificada;
 	}
@@ -315,6 +328,32 @@ public class Control {
 				System.out.println("		Instrucción nueve: HRS y el dato es: "+dato);
 				this.setTextoEntradaDescodificada(" ");
 				System.out.print("\n			Guardando salida");
+				//se formatea la salida:
+				
+				
+				String guardar="";
+				if(ubicacionSalida!=null) {
+					for (int i = 0; i < io.getSalida().size(); i++) { // Cambié <= por <
+					    guardar += "[" + i + "] " + io.getSalida().get(i) + "\n";
+					}
+
+					
+					
+					try {
+						FileWriter archivo = new FileWriter(ubicacionSalida+"/salida.tjd");
+						archivo.write(guardar);
+						archivo.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						System.err.println("Error al guardar el archivo: " + e.getMessage());
+						
+					}
+				}else {
+					JOptionPane.showInternalMessageDialog(null, "Sin ubicación de salida establecida.");
+		
+					System.out.print("\n			Sin ubicación de salida establecida");
+				}
+				
 				System.out.print("\n			Estableciendo HLT");
 				flag.setFlagHLT(1);
 				contador.setPosicion(0);
