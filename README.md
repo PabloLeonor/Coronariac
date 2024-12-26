@@ -25,4 +25,4 @@ The emulator is almost done!
 
   Write this in coronariac's memory sheet and press [program] button, then step the machine using the [step] for execute every cycle of the adding program
 
-  At the moment the program is full spanish, now, its time to translate into english
+For the english version of the program, please visit: https://github.com/PabloLeonor/-EN-Coronariac
